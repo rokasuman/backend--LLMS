@@ -4,3 +4,8 @@
 
 ###
 GET {{rootUrl}}
+
+### auth api 
+
+### post new user 
+POST {{rootUrl}}/api/v1/auth/register
