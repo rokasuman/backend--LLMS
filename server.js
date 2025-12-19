@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 //connection with db 
-import { dbConnect } from "./src/controller/config/dbConfig.js";
+import { dbConnect } from "./src/config/dbConfig.js";
 dbConnect();
 
 // middleware
@@ -17,19 +17,21 @@ app.use(express.json());
 
 // api endpoints 
 import authRoute from "./src/routes/authRoute.js"
+import { errorHandler } from "./src/middleware/errorHandler.js";
+import { responseClient } from "./src/middleware/responseClient.js";
 //creating the middle for auth route 
 app.use("/api/v1/auth",authRoute)
 
 //server status
 app.get("/",(req,res) =>{
-    res.json({
-        status: 200,
-        message :" server is running live"
-    })
+    const message = "server is running live"
+    responseClient({req,res,message});
+    
 })
+app.use(errorHandler);
 
 //listening the server 
-app.listen(PORT,(res,rep)=>{
+app.listen(PORT,()=>{
     try {
         console.log("server is running on port http://localhost:"+ PORT )
         
