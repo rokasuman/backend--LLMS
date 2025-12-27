@@ -99,3 +99,26 @@ export const activeUser = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const loginUser = (req,res) =>{
+  try {
+    const {email,password} = req.body;
+    console.log(email,password)
+
+    // todo: add the aauthtification logic
+    res.status(200).json({
+      status:200,
+      message:"login is recevid"
+    })
+
+
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({
+      status: 400,
+      message :error.message
+    })
+  }
+
+}
