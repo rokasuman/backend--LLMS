@@ -14,7 +14,21 @@ Content-Type: application/json
 {
     "fName":"suman",
     "lName":"roka",
-    "email":"roka101@gmail.com",
+    "email":"roka57@gmail.com",
     "phone":"09987655",
     "password":"12345@"
+
 }
+
+### post to active user 
+POST {{rootUrl}}/api/v1/auth/activate-user
+Content-Type: application/json
+
+{
+    "sessionId":"694b5ef855b8cdc77932a8a4",
+    "t":"d47cdf1f-8912-4dd1-8a5e-2044668e6e88"
+
+    
+}
+
+

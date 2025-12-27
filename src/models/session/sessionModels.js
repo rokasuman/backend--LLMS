@@ -4,3 +4,9 @@ import sessionSchema from "./sessionSchema.js";
 export const createNewSession = (sessionObj) => {
   return sessionSchema(sessionObj).save();
 };
+
+// deleting the sessions
+export const deleteSession = (filter) => {
+  return sessionSchema.findOneAndDelete(filter);
+};
+
