@@ -1,5 +1,5 @@
 import { validateData } from "./jioValidations.js";
-
+import joi from "joi"
 
 export const newValiDataValidation = (req, res, next) => {
   const obj = {
@@ -22,3 +22,13 @@ export const aciveUserDataValidation = (req, res, next) => {
 
     validateData({req,res,next,obj});
 }
+
+export const loginDataValidation = (req, res, next) => {
+
+    const obj ={
+      email: joi.string().email().required(),
+      password: joi.string().required(),
+    }
+
+    validateData({req,res,next,obj});
+  }

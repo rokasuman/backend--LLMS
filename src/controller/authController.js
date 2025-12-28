@@ -3,10 +3,11 @@ import {
   createNewSession,
   deleteSession,
 } from "../models/session/sessionModels.js";
-import { createNewUser, upDateUser } from "../models/user/userModels.js";
+import { createNewUser, getUserByEmail, upDateUser } from "../models/user/userModels.js";
 import { userAccountActivatedNotificationEmail, userActivationUrlEmail } from "../services/email/emailServices.js";
-import { hashPassword } from "../utils/bcrypt.js";
+import { comaparePassword, hashPassword } from "../utils/bcrypt.js";
 import { v4 as uuidv4 } from "uuid";
+import { getJwt } from "../utils/jwt.js";
 
 
 export const insertNewUser = async (req, res, next) => {
@@ -101,17 +102,39 @@ export const activeUser = async (req, res, next) => {
 };
 
 
-export const loginUser = (req,res) =>{
+export const loginUser =async (req,res) =>{
   try {
     const {email,password} = req.body;
     console.log(email,password)
+    // getting user by email
+    const user = await getUserByEmail(email);
+   
+    if(user?._id){
+      console.log(user);
+    }
+     // comparing the password imported from bcrypt
+     const isPassMatch = comaparePassword(password,user.password)
+      
+     if(isPassMatch){
+      console.log("user authenticated successfully")
+     }
+     //creating the jwts
+     const jwts = await getJwt(email)
 
-    // todo: add the aauthtification logic
-    res.status(200).json({
-      status:200,
-      message:"login is recevid"
-    })
+     // respnose the jwts
+     return responseClient({
+      req,
+      res,
+      message:"You have successfully login",
+      payload:jwts,
+     })
+    
 
+
+
+    const message = "Invalid login Details"
+    const statusCode = 401
+    responseClient({req,res,message,statusCode})
 
   } catch (error) {
     console.log(error)
