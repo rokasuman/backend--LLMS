@@ -128,13 +128,6 @@ export const loginUser =async (req,res) =>{
       message:"You have successfully login",
       payload:jwts,
      })
-    
-
-
-
-    const message = "Invalid login Details"
-    const statusCode = 401
-    responseClient({req,res,message,statusCode})
 
   } catch (error) {
     console.log(error)

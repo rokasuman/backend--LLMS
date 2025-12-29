@@ -9,4 +9,7 @@ export const createNewSession = (sessionObj) => {
 export const deleteSession = (filter) => {
   return sessionSchema.findOneAndDelete(filter);
 };
-
+//geting the user by email
+export const getSession = (filter) => {
+  return sessionSchema.findOne(filter);
+};
