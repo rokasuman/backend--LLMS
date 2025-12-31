@@ -16,8 +16,8 @@ export const newValiDataValidation = (req, res, next) => {
 export const aciveUserDataValidation = (req, res, next) => {
 
     const obj ={
-      sessionId: joi.string().min(10).max(30).required(),
-      t: joi.string().min(10).max(30).required(),
+      sessionId: joi.string().required(),
+      t: joi.string().required(),
     }
 
     validateData({req,res,next,obj});

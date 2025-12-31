@@ -4,10 +4,12 @@ import {
   deleteSession,
 } from "../models/session/sessionModels.js";
 import { createNewUser, getUserByEmail, upDateUser } from "../models/user/userModels.js";
-import { userAccountActivatedNotificationEmail, userActivationUrlEmail } from "../services/email/emailServices.js";
+import { passwordResetOTPNotificationSendMail, userAccountActivatedNotificationEmail, userActivationUrlEmail } from "../services/email/emailServices.js";
 import { comaparePassword, hashPassword } from "../utils/bcrypt.js";
 import { v4 as uuidv4 } from "uuid";
 import { getJwt } from "../utils/jwt.js";
+import { randomGenerator } from "../utils/randomGenerator.js";
+
 
 
 export const insertNewUser = async (req, res, next) => {
@@ -80,11 +82,12 @@ export const activeUser = async (req, res, next) => {
           status: "active"
         }
       );
-      if (user?.id) {
+      if (user?._id) {
         //send email notificaion
         await userAccountActivatedNotificationEmail({
           email: user.email,
-          name: user.fName
+          name: user.fName,
+          
         });
 
        
@@ -112,6 +115,7 @@ export const loginUser =async (req,res) =>{
     if(user?._id){
       console.log(user);
     }
+   
      // comparing the password imported from bcrypt
      const isPassMatch = comaparePassword(password,user.password)
       
@@ -138,3 +142,44 @@ export const loginUser =async (req,res) =>{
   }
 
 }
+
+//controller for opt endpint 
+export const generateOTP = async (req, res, next) => {
+  try {
+    // getting the user by email
+    const { email } = req.body;
+    const user = await getUserByEmail(email);
+    console.log(user);
+
+    if (user?._id) {
+      // generating the OTP
+      const otp = randomGenerator();
+      console.log(otp);
+
+      // store in session table
+      const session = await createNewSession({
+        token: otp,
+        association: email,
+        expire:new Date(Date.now() + 1000*60*5) // 5mins 
+      });
+
+      // checking the session has an id
+      if (session?._id) {
+        console.log(session);
+        //seding email to user
+        const info = await passwordResetOTPNotificationSendMail({
+          email,name:user.fName,otp
+        })
+        console.log(info)
+      }
+    }
+
+    res.json({
+      status: 200,
+      message: "OTP has been sent to your email. Please check it.",
+    });
+  } catch (error) {
+    console.log(error);
+    next();
+  }
+};

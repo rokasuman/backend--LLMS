@@ -16,7 +16,6 @@ export const userAuthMiddleWare = async (req, res, next) => {
       });
     }
 
-    // Split "Bearer <token>"
     const token = authorization.split(" ")[1];
     if (!token) {
       return responseClient({
@@ -27,8 +26,7 @@ export const userAuthMiddleWare = async (req, res, next) => {
       });
     }
 
-    // Verify token
-    const decoded = verifyAccessJWT(token);
+    const decoded = await verifyAccessJWT(token);
     if (!decoded || !decoded.email) {
       return responseClient({
         req,
@@ -38,7 +36,6 @@ export const userAuthMiddleWare = async (req, res, next) => {
       });
     }
 
-    // Check if session exists
     const tokenSession = await getSession({ token });
     if (!tokenSession?._id) {
       return responseClient({
@@ -49,7 +46,6 @@ export const userAuthMiddleWare = async (req, res, next) => {
       });
     }
 
-    // Get user by email
     const user = await getUserByEmail(decoded.email);
     if (!user?._id) {
       return responseClient({
@@ -60,9 +56,8 @@ export const userAuthMiddleWare = async (req, res, next) => {
       });
     }
 
-    // Attach user info to request object
     req.userInfo = user;
-    next(); // Pass control to the next middleware or route
+    next();
   } catch (error) {
     console.error(error);
     return responseClient({
