@@ -1,4 +1,4 @@
-import { userActivationUrlEmailTemplete,userAccountActivatedNotificationTemplate, passwordResetOTPSendTemplate,} from "./emailTemplates.js";
+import { userActivationUrlEmailTemplete,userAccountActivatedNotificationTemplate, passwordResetOTPSendTemplate, userProfileUpdatedNotificationTemplate,} from "./emailTemplates.js";
 import { emailTransporter } from "./transport.js";
 
 
@@ -22,13 +22,11 @@ const transporter = emailTransporter();
 const info = await transporter.sendMail(passwordResetOTPSendTemplate(obj))
 console.log(info.messageId)
 return info.messageId;
-
 }
-//email service for pasword Updated
-export const userProfileUpdatedNotificationMail =async (obj)=>{
+
+export const userUpdatedNotificationEmail =async (obj)=>{
 const transporter = emailTransporter();
-const info = await transporter.sendMail(passwordResetOTPSendTemplate(obj))
+const info = await transporter.sendMail(userProfileUpdatedNotificationTemplate(obj))
 console.log(info.messageId)
 return info.messageId;
-
 }

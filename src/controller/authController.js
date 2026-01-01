@@ -6,7 +6,7 @@ import {
 } from "../models/session/sessionModels.js";
 import { createNewUser, getUserByEmail, upDateUser } from "../models/user/userModels.js";
 import { passwordResetOTPNotificationSendMail, userAccountActivatedNotificationEmail, userActivationUrlEmail } from "../services/email/emailServices.js";
-import { comaparePassword, hashPassword } from "../utils/bcrypt.js";
+import { comparePassword, hashPassword } from "../utils/bcrypt.js";
 import { v4 as uuidv4 } from "uuid";
 import { getJwt } from "../utils/jwt.js";
 import { randomGenerator } from "../utils/randomGenerator.js";
@@ -106,44 +106,54 @@ export const activeUser = async (req, res, next) => {
   }
 };
 
-
-export const loginUser =async (req,res) =>{
+export const loginUser = async (req, res) => {
   try {
-    const {email,password} = req.body;
-    console.log(email,password)
-    // getting user by email
-    const user = await getUserByEmail(email);
-   
-    if(user?._id){
-      console.log(user);
-    }
-   
-     // comparing the password imported from bcrypt
-     const isPassMatch = comaparePassword(password,user.password)
-      
-     if(isPassMatch){
-      console.log("user authenticated successfully")
-     }
-     //creating the jwts
-     const jwts = await getJwt(email)
+    const { email, password } = req.body;
 
-     // respnose the jwts
-     return responseClient({
+    // get user by email
+    const user = await getUserByEmail(email);
+
+    if (!user?._id) {
+      return responseClient({
+        req,
+        res,
+        statusCode: 401,
+        message: "Invalid email or password",
+      });
+    }
+
+    
+    const isPassMatch =  comparePassword (password, user.password);
+
+    if (!isPassMatch) {
+      return responseClient({
+        req,
+        res,
+        statusCode: 401,
+        message: "Invalid email or password",
+      });
+    }
+
+    // create JWTs
+    const jwts = await getJwt(email);
+
+    // response
+    return responseClient({
       req,
       res,
-      message:"You have successfully login",
-      payload:jwts,
-     })
+      message: "You have successfully login",
+      payload: jwts,
+    });
 
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).json({
       status: 400,
-      message :error.message
-    })
+      message: error.message,
+    });
   }
+};
 
-}
 
 //controller for opt endpint 
 export const generateOTP = async (req, res, next) => {
@@ -230,7 +240,7 @@ export const resetNewPassword = async(req, res, next) => {
       if(user?._id){
 
        //send email notification
-       userAccountActivatedNotificationEmail({email,name:user.fName})
+       userUpdatedNotificationEmail({email,name:user.fName})
 
         return responseClient({
           req,
