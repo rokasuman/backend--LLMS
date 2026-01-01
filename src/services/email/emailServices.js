@@ -24,3 +24,11 @@ console.log(info.messageId)
 return info.messageId;
 
 }
+//email service for pasword Updated
+export const userProfileUpdatedNotificationMail =async (obj)=>{
+const transporter = emailTransporter();
+const info = await transporter.sendMail(passwordResetOTPSendTemplate(obj))
+console.log(info.messageId)
+return info.messageId;
+
+}

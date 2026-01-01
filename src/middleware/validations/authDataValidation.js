@@ -32,3 +32,15 @@ export const loginDataValidation = (req, res, next) => {
 
     validateData({req,res,next,obj});
   }
+
+  //reset password validation 
+
+  export const newPasswordDataValidation = (req,res,next)=>{
+    
+    const obj ={
+       email: joi.string().email().required(),
+       otp:joi.string().required().max(4),
+      password: joi.string().required(),
+    }
+    validateData({req,res,next,obj}) 
+  }

@@ -59,3 +59,17 @@ export const passwordResetOTPSendTemplate = ({ email,name, otp }) => {
     `,
   };
 };
+
+export const userProfileUpdatedNotificationTemplate = ({ email,name}) => {
+  return {
+    from: `"Local Library" <${process.env.SMTP_EMAIL}>`,
+    to: email,
+    subject: "Your account has been updated",
+    text: `Hello ${name}, Your account has been updated`,
+    html: `
+  
+      <p>Hello ${name}, Your account has been updated</p>
+     
+    `,
+  };
+};

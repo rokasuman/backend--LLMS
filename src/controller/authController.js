@@ -2,6 +2,7 @@ import { responseClient } from "../middleware/responseClient.js";
 import {
   createNewSession,
   deleteSession,
+  getSession,
 } from "../models/session/sessionModels.js";
 import { createNewUser, getUserByEmail, upDateUser } from "../models/user/userModels.js";
 import { passwordResetOTPNotificationSendMail, userAccountActivatedNotificationEmail, userActivationUrlEmail } from "../services/email/emailServices.js";
@@ -9,6 +10,7 @@ import { comaparePassword, hashPassword } from "../utils/bcrypt.js";
 import { v4 as uuidv4 } from "uuid";
 import { getJwt } from "../utils/jwt.js";
 import { randomGenerator } from "../utils/randomGenerator.js";
+import { token } from "morgan";
 
 
 
@@ -146,40 +148,109 @@ export const loginUser =async (req,res) =>{
 //controller for opt endpint 
 export const generateOTP = async (req, res, next) => {
   try {
-    // getting the user by email
     const { email } = req.body;
-    const user = await getUserByEmail(email);
-    console.log(user);
 
-    if (user?._id) {
-      // generating the OTP
-      const otp = randomGenerator();
-      console.log(otp);
-
-      // store in session table
-      const session = await createNewSession({
-        token: otp,
-        association: email,
-        expire:new Date(Date.now() + 1000*60*5) // 5mins 
+    if (!email) {
+      return res.json({
+        status: 400,
+        message: "Email is required",
       });
-
-      // checking the session has an id
-      if (session?._id) {
-        console.log(session);
-        //seding email to user
-        const info = await passwordResetOTPNotificationSendMail({
-          email,name:user.fName,otp
-        })
-        console.log(info)
-      }
     }
 
-    res.json({
+    // get user
+    const user = await getUserByEmail(email);
+
+    if (!user?._id) {
+      return res.json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    // generate OTP (string)
+    const otp = String(randomGenerator());
+    console.log("OTP:", otp);
+
+    // store OTP in session
+    const session = await createNewSession({
+      token: otp,
+      association: email,
+      expire: new Date(Date.now() + 1000 * 60 * 5), // 5 mins
+    });
+
+    if (!session?._id) {
+      return res.json({
+        status: 500,
+        message: "Failed to generate OTP",
+      });
+    }
+
+    // send email
+    await passwordResetOTPNotificationSendMail({
+      email,
+      name: user.fName,
+      otp,
+    });
+
+    return res.json({
       status: 200,
       message: "OTP has been sent to your email. Please check it.",
     });
   } catch (error) {
     console.log(error);
-    next();
+    next(error); 
   }
 };
+
+
+
+//controller for reset password 
+export const resetNewPassword = async(req, res, next) => {
+  try {
+    const { email, otp, password } = req.body;
+    console.log(email,password,otp);
+
+    //checking the opt in session tabel
+    const session = await getSession({
+      token:otp,
+      association:email
+    })
+    if(!token){
+      return res.json({
+        status:400,
+        message :"Token has been expire. Resend it."
+      })
+    }
+    //encrypt the password 
+    if(session?._id){
+      const hassPass = hashPassword(password)
+      console.log(hassPass)
+      //update the user 
+      const user  = await  upDateUser({email},{password:hassPass})
+      if(user?._id){
+
+       //send email notification
+       userAccountActivatedNotificationEmail({email,name:user.fName})
+
+        return responseClient({
+          req,
+          res,
+          message :"You have successfully updated Password. "
+        })
+      }
+    }
+    res.json({
+      status: 200,
+      message: "todo the reset"
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: 400,
+      message: error.message
+    });
+    next(error);
+  }
+};
+
