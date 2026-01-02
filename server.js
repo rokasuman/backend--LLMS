@@ -20,9 +20,11 @@ import authRoute from "./src/routes/authRoute.js"
 import { errorHandler } from "./src/middleware/errorHandler.js";
 import { responseClient } from "./src/middleware/responseClient.js";
 import userRoute from "./src/routes/userRoute.js"
+import booksRoute from "./src/routes/booksRouter.js"
 //creating the middle for auth route 
 app.use("/api/v1/auth",authRoute)
 app.use("/api/v1/user",userRoute)
+app.use("/api/v1/books",booksRoute)
 
 //server status
 app.get("/",(req,res) =>{

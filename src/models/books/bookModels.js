@@ -1,6 +1,6 @@
-import bookSchema from "./bookSchema";
+import book from "./bookSchema.js";
 
 //insert the new book 
 export const createNewBook =(bookObj) =>{
-    return bookSchema(bookObj).save();
-}
+    return new book(bookObj).save();
+};

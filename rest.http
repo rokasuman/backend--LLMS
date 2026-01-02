@@ -37,7 +37,7 @@ Content-Type: application/json
 
 {
     "email" :"roka198@gmail.com",
-    "password" : "12345@"
+    "password" : "123456@"
 }
 
 ### get the userProfile
@@ -65,3 +65,20 @@ Content-Type: application/json
 
 
 } 
+
+### books api 
+GET {{rootUrl}}/api/v1/books
+
+###get books
+POST {{rootUrl}}/api/v1/books
+Content-Type: application/json
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJva2ExOThAZ21haWwuY29tIiwiaWF0IjoxNzY3MzI2NjQ0LCJleHAiOjE3NjczMjc1NDR9.T6QEyYKLs06Q3VWI7q94n7nwCZMboB_i0Jn2bFgVCR4
+
+{
+   "year": 2021,
+  "title": "Atomic Habits",
+  "author": "James Clear",
+  "imgUI": "https://example.com/images/atomic-habits.jpg",
+  "isbn": "9780735211292",
+  "genre": "Self-Help"
+}

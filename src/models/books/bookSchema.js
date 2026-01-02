@@ -1,19 +1,22 @@
-import { number, required, string, types } from "joi";
 import mongoose from "mongoose";
 
-const bookschema = new mongoose.Schema(
+const bookSchema = new mongoose.Schema(
   {
     status: { type: String, default: "inactive" },
     year: { type: Number, required: true },
     title: { type: String, required: true },
-    auther: { type: String, required: true },
+    author: { type: String, required: true },
     imgUI: { type: String, required: true },
     isbn: { type: String, required: true },
     genre: { type: String, required: true },
-    avaiable: { type: String, required: true },
-    averageRating: { type: Number, required: true },
+    available: { type: Boolean, default: false },
+    averageRating: { type: Number },
     addBy: {
-      name: { type: String, required: true },
+      name: { type: String },
+      adminId: { type: mongoose.Types.ObjectId, required: true },
+    },
+    lastUpdatedBy: {
+      name: { type: String },
       adminId: { type: mongoose.Types.ObjectId, required: true },
     },
   },
@@ -21,4 +24,5 @@ const bookschema = new mongoose.Schema(
     timestamps: true,
   }
 );
-export default mongoose.model("Book",bookschema)
+
+export default mongoose.model("Book", bookSchema);

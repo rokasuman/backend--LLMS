@@ -68,3 +68,16 @@ export const userAuthMiddleWare = async (req, res, next) => {
     });
   }
 };
+
+//checking if the user is admin or not
+export const adminAuthMiddleware = (req, res, next) => {
+  try {
+    if (req.userInfo.role === "admin") {
+      next();
+    } else {
+      res.json({ message: "You are not authorized" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
