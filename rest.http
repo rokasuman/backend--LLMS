@@ -69,10 +69,13 @@ Content-Type: application/json
 ### books api 
 GET {{rootUrl}}/api/v1/books
 
+### books api for admin
+GET {{rootUrl}}/api/v1/books/admin
+
 ###get books
 POST {{rootUrl}}/api/v1/books
 Content-Type: application/json
-Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJva2ExOThAZ21haWwuY29tIiwiaWF0IjoxNzY3MzI2NjQ0LCJleHAiOjE3NjczMjc1NDR9.T6QEyYKLs06Q3VWI7q94n7nwCZMboB_i0Jn2bFgVCR4
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJva2ExOThAZ21haWwuY29tIiwiaWF0IjoxNzY4MDEwMTcyLCJleHAiOjE3NjgwMTEwNzJ9.Vxxk7QmRUHMy6NUFMmv3M9pe22Pf3Elx8fuMvSXIM4M
 
 {
    "year": 2021,

@@ -11,6 +11,13 @@ const bookSchema = new mongoose.Schema(
     genre: { type: String, required: true },
     available: { type: Boolean, default: false },
     averageRating: { type: Number },
+    description:{
+      type:String, required:false
+    },
+    expectedAvailable:{
+      type:Number, default:null,
+    },
+    slug:{type:String, unique:true,index:1,required:true},
     addBy: {
       name: { type: String },
       adminId: { type: mongoose.Types.ObjectId, required: true },
@@ -25,4 +32,4 @@ const bookSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Book", bookSchema);
+export default mongoose.model("book", bookSchema);

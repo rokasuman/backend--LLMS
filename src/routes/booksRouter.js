@@ -1,16 +1,14 @@
 import express from "express";
-import { insertBooks } from "../controller/booksCntroller.js";
+import { getAllBooksController, insertBooks } from "../controller/booksCntroller.js";
 import { adminAuthMiddleware, userAuthMiddleWare } from "../middleware/authMiddleWare.js";
 
 const router = express.Router()
 
-//creating the router the books 
-router.get("/",(req,res,next)=>{
-    res.json({
-        message:"todo:creating the table"
-    })
-    next()
-})
+//public api
+router.get("/", getAllBooksController);
+
+// admin only
+router.get("/admin",userAuthMiddleWare,adminAuthMiddleware, getAllBooksController);
 
 //api to insert the book 
 router.post("/",userAuthMiddleWare,adminAuthMiddleware,insertBooks)
